@@ -12,14 +12,15 @@
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>35</version>
-    <relativePath /> <!-- resolve from repository -->
+    <relativePath/> <!-- resolve from repository -->
   </parent>
 
   <artifactId>ratis</artifactId>
@@ -143,7 +144,7 @@
     <project.build.outputTimestamp>2025-11-03T02:50:35Z</project.build.outputTimestamp>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-     <!-- where to find the generated LICENSE files -->
+    <!-- where to find the generated LICENSE files -->
     <license.aggregate.path>
       ${project.build.directory}/maven-shared-archive-resources/META-INF/LICENSE
     </license.aggregate.path>
@@ -201,6 +202,9 @@
     <jacoco.version>0.8.12</jacoco.version>
     <jakarta.annotation.version>1.3.5</jakarta.annotation.version>
     <flaky-test-groups>flaky | org.apache.ratis.test.tag.FlakyTest</flaky-test-groups>
+
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss.S</maven.build.timestamp.format>
+    <timestamp>${maven.build.timestamp}</timestamp>
   </properties>
 
   <dependencyManagement>
@@ -412,6 +416,23 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.gradle</groupId>
+          <artifactId>develocity-maven-extension</artifactId>
+          <configuration>
+            <develocity>
+              <normalization>
+                <systemProperties>
+                  <ignoredKeys>
+                    <ignore>ratis.log.dir</ignore>
+                    <ignore>ratis.tmp.dir</ignore>
+                  </ignoredKeys>
+                </systemProperties>
+              </normalization>
+            </develocity>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-maven-plugins</artifactId>
