@@ -34,14 +34,14 @@
       <testLogging>true</testLogging>
       <resourceUsage>false</resourceUsage>
     </capture>
-    <backgroundBuildScanUpload>#{isFalse(env['GITHUB_ACTIONS'])}</backgroundBuildScanUpload>    
+    <backgroundBuildScanUpload>#{isFalse(env['GITHUB_ACTIONS'])}</backgroundBuildScanUpload>
     <obfuscation>
       <ipAddresses>#{{'0.0.0.0'}}</ipAddresses>
     </obfuscation>
   </buildScan>
   <buildCache>
     <local>
-      <enabled>#{isFalse(env['GITHUB_ACTIONS'])}</enabled>
+      <enabled>true</enabled>
     </local>
     <remote>
       <enabled>false</enabled>
