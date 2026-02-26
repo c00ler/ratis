@@ -24,7 +24,7 @@
         xsi:schemaLocation="https://www.gradle.com/develocity-maven https://www.gradle.com/schema/develocity-maven.xsd">
   <projectId>ratis</projectId>
   <server>
-    <url>https://develocity.apache.org</url>
+    <url>https://ge.solutions-team.gradle.com</url>
     <allowUntrusted>false</allowUntrusted>
   </server>
   <buildScan>
@@ -34,10 +34,7 @@
       <testLogging>true</testLogging>
       <resourceUsage>false</resourceUsage>
     </capture>
-    <backgroundBuildScanUpload>#{isFalse(env['GITHUB_ACTIONS'])}</backgroundBuildScanUpload>
-    <publishing>
-      <onlyIf><![CDATA[authenticated]]></onlyIf>
-    </publishing>
+    <backgroundBuildScanUpload>#{isFalse(env['GITHUB_ACTIONS'])}</backgroundBuildScanUpload>    
     <obfuscation>
       <ipAddresses>#{{'0.0.0.0'}}</ipAddresses>
     </obfuscation>
