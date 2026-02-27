@@ -21,12 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
 
+import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import org.apache.ratis.metrics.impl.MetricRegistriesImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -89,4 +93,10 @@ public class TestMetricRegistriesLoader {
     assertEquals(2, cntr.get());
   }
 
+  @Test
+  public void testLoadSample() throws Exception {
+    Path path = Paths.get(System.getProperty("samplesDir")).resolve("sample.txt");
+    List<String> lines = Files.readAllLines(path);
+    assertEquals("42", lines.get(0));
+  }
 }
