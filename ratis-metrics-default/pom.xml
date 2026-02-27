@@ -57,6 +57,37 @@
     </dependency>
   </dependencies>
   <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Declare samplesDir as a tracked file-set input so that surefire:test
+             becomes cacheable (absolute path in systemPropertyVariables would otherwise
+             make the goal NOT_CACHEABLE without this declaration). -->
+        <plugin>
+          <groupId>com.gradle</groupId>
+          <artifactId>develocity-maven-extension</artifactId>
+          <configuration combine.children="append">
+            <develocity>
+              <plugins>
+                <plugin>
+                  <artifact>maven-surefire-plugin</artifact>
+                  <inputs>
+                    <fileSets>
+                      <fileSet>
+                        <name>samplesDir</name>
+                        <paths>
+                          <path>${project.basedir}/src/test/samples</path>
+                        </paths>
+                        <normalization>RELATIVE_PATH</normalization>
+                      </fileSet>
+                    </fileSets>
+                  </inputs>
+                </plugin>
+              </plugins>
+            </develocity>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
