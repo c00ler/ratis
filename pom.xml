@@ -647,6 +647,56 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco.version}</version>
         </plugin>
+
+        <!--
+          Clean compile output directories before each compilation to ensure
+          consistent Develocity build-cache keys between clean and non-clean
+          builds.  Without this, pre-existing .class files in target/classes
+          and target/test-classes are fingerprinted as stale-output inputs,
+          producing a different cache key than a fresh (clean) build and
+          causing permanent cache misses on incremental mvn package runs.
+          Since useIncrementalCompilation=false is already set, a full
+          recompile always happens anyway, so cleaning the output dirs first
+          has no practical downside.
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>clean-compile-output-for-cache</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+              <configuration>
+                <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                <filesets>
+                  <fileset>
+                    <directory>${project.build.outputDirectory}</directory>
+                    <followSymlinks>false</followSymlinks>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </execution>
+            <execution>
+              <id>clean-test-compile-output-for-cache</id>
+              <phase>generate-test-resources</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+              <configuration>
+                <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                <filesets>
+                  <fileset>
+                    <directory>${project.build.testOutputDirectory}</directory>
+                    <followSymlinks>false</followSymlinks>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>org.cyclonedx</groupId>
           <artifactId>cyclonedx-maven-plugin</artifactId>
@@ -671,9 +721,19 @@
         <inherited>true</inherited>
         <extensions>true</extensions>
       </plugin>
+      <!--
+        version-info scans the combined source tree with a glob pattern
+        (*/src/main/java) that only resolves correctly from the root
+        aggregator directory.  In sub-modules the glob matches nothing, so
+        the goal is effectively a no-op there but still spawns a git process
+        to read the SCM commit, injecting a volatile version-info.scm.commit
+        Maven property that can pollute downstream cache keys.
+        inherited=false confines this execution to the root module only.
+      -->
       <plugin>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-maven-plugins</artifactId>
+        <inherited>false</inherited>
         <executions>
           <execution>
             <id>version-info</id>
@@ -692,6 +752,11 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <!-- Activates the executions declared in pluginManagement above. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
