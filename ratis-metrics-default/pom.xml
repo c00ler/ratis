@@ -75,6 +75,33 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+      <!-- Declare samplesDir as a relocatable file input so surefire:test becomes cacheable.
+           Without this, Develocity marks the goal executed_not_cacheable because the samplesDir
+           system property contains an absolute path not declared as a goal input. -->
+      <plugin>
+        <groupId>com.gradle</groupId>
+        <artifactId>develocity-maven-extension</artifactId>
+        <configuration combine.children="append">
+          <develocity>
+            <plugins>
+              <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <inputs>
+                  <fileSets>
+                    <fileSet>
+                      <name>samplesDir</name>
+                      <paths>
+                        <path>${project.basedir}/src/test/samples</path>
+                      </paths>
+                      <normalization>RELATIVE_PATH</normalization>
+                    </fileSet>
+                  </fileSets>
+                </inputs>
+              </plugin>
+            </plugins>
+          </develocity>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

@@ -428,6 +428,14 @@
                     <ignore>ratis.tmp.dir</ignore>
                   </ignoredKeys>
                 </systemProperties>
+                <runtimeClassPath>
+                  <!-- Ignore build.properties from cache key: it contains ${maven.build.timestamp}
+                       (via <timestamp> property + filtering=true in ratis-common test resources),
+                       which changes on every build and causes surefire:test to be VOLATILE. -->
+                  <ignoredFiles>
+                    <ignoredFile>**/build.properties</ignoredFile>
+                  </ignoredFiles>
+                </runtimeClassPath>
               </normalization>
             </develocity>
           </configuration>
