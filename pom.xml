@@ -437,6 +437,28 @@
                   </ignoredFiles>
                 </runtimeClassPath>
               </normalization>
+              <plugins>
+                <plugin>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <inputs>
+                    <!-- Declare samplesDir as a relocatable fileSet input so surefire:test in
+                         ratis-metrics-default becomes cacheable. Without this, Develocity marks
+                         the goal executed_not_cacheable because the samplesDir system property
+                         (${project.basedir}/src/test/samples) contains an absolute path not
+                         declared as a goal input. For modules without this directory, the path
+                         resolves to a non-existent directory (treated as empty input). -->
+                    <fileSets>
+                      <fileSet>
+                        <name>samplesDir</name>
+                        <paths>
+                          <path>${project.basedir}/src/test/samples</path>
+                        </paths>
+                        <normalization>RELATIVE_PATH</normalization>
+                      </fileSet>
+                    </fileSets>
+                  </inputs>
+                </plugin>
+              </plugins>
             </develocity>
           </configuration>
         </plugin>
