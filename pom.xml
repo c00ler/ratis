@@ -422,6 +422,26 @@
           <configuration>
             <develocity>
               <normalization>
+                <runtimeClassPath>
+                  <!-- ratis-version.properties is filtered with git commit metadata
+                       (revision=${version-info.scm.commit}) which changes per commit,
+                       causing resources:resources and downstream goals to be VOLATILE.
+                       Ignore the whole file from the cache key. -->
+                  <ignoredFiles>
+                    <ignoredFile>**/ratis-version.properties</ignoredFile>
+                  </ignoredFiles>
+                  <!-- build.properties in ratis-common test resources contains
+                       build.timestamp=${timestamp} that changes on every build.
+                       Only ignore the volatile timestamp key, keep the rest stable. -->
+                  <propertiesNormalizations>
+                    <propertiesNormalization>
+                      <path>**/build.properties</path>
+                      <ignoredProperties>
+                        <ignore>build.timestamp</ignore>
+                      </ignoredProperties>
+                    </propertiesNormalization>
+                  </propertiesNormalizations>
+                </runtimeClassPath>
                 <systemProperties>
                   <ignoredKeys>
                     <ignore>ratis.log.dir</ignore>
@@ -537,7 +557,6 @@
             <meminitial>512m</meminitial>
             <maxmem>2048m</maxmem>
             <showDeprecation>false</showDeprecation>
-            <useIncrementalCompilation>false</useIncrementalCompilation>
             <compilerArgs>
               <arg>-Xlint:all,-options,-path</arg>
             </compilerArgs>
