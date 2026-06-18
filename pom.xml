@@ -422,10 +422,32 @@
           <configuration>
             <develocity>
               <normalization>
+                <runtimeClasspath>
+                  <!-- Ignore volatile build.timestamp from filtered test resources.
+                       ratis-common filters src/test/resources/build.properties, which
+                       contains build.timestamp=${timestamp} (= maven.build.timestamp).
+                       This timestamp changes on every build, causing surefire:test to
+                       always miss the cache. We normalize the property away so only
+                       stable content contributes to the cache key. -->
+                  <propertiesFiles>
+                    <propertiesFile>
+                      <paths>
+                        <path>**/build.properties</path>
+                      </paths>
+                      <ignoredProperties>
+                        <ignore>build.timestamp</ignore>
+                      </ignoredProperties>
+                    </propertiesFile>
+                  </propertiesFiles>
+                </runtimeClasspath>
                 <systemProperties>
                   <ignoredKeys>
                     <ignore>ratis.log.dir</ignore>
                     <ignore>ratis.tmp.dir</ignore>
+                    <!-- samplesDir is an absolute path passed to surefire in
+                         ratis-metrics-default but is not used by any test.
+                         Declaring it as ignored allows surefire:test to be cached. -->
+                    <ignore>samplesDir</ignore>
                   </ignoredKeys>
                 </systemProperties>
               </normalization>
@@ -537,7 +559,6 @@
             <meminitial>512m</meminitial>
             <maxmem>2048m</maxmem>
             <showDeprecation>false</showDeprecation>
-            <useIncrementalCompilation>false</useIncrementalCompilation>
             <compilerArgs>
               <arg>-Xlint:all,-options,-path</arg>
             </compilerArgs>
