@@ -422,6 +422,18 @@
           <configuration>
             <develocity>
               <normalization>
+                <runtimeClasspath>
+                  <ignoredFiles>
+                    <!-- build.properties contains ${timestamp} (= ${maven.build.timestamp}), which changes
+                         on every build. Normalizing it away from the test classpath cache key prevents
+                         ratis-common:surefire:test from being VOLATILE on every build. -->
+                    <ignore>**/build.properties</ignore>
+                    <!-- ratis-version.properties is filtered with ${version-info.scm.commit} (git commit hash).
+                         This changes with every commit, making all surefire:test goals VOLATILE.
+                         Normalizing it away from the runtime classpath cache key prevents cache misses. -->
+                    <ignore>**/ratis-version.properties</ignore>
+                  </ignoredFiles>
+                </runtimeClasspath>
                 <systemProperties>
                   <ignoredKeys>
                     <ignore>ratis.log.dir</ignore>
@@ -537,7 +549,6 @@
             <meminitial>512m</meminitial>
             <maxmem>2048m</maxmem>
             <showDeprecation>false</showDeprecation>
-            <useIncrementalCompilation>false</useIncrementalCompilation>
             <compilerArgs>
               <arg>-Xlint:all,-options,-path</arg>
             </compilerArgs>
